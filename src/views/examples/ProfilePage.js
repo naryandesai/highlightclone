@@ -52,13 +52,14 @@ const listener = (data) => {
     switch (data.payload.event) {
 
         case 'signIn':
-            alert("Confirm you account with link sent to your email inbox! - " + getEmail(data.payload.data))
+            alert("Confirm you account with code sent to your email inbox! - " + getEmail(data.payload.data))
             console.log(data.payload.data)
             let email = getEmail(data.payload.data)
             fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/lock/lock&'+email)
             logger.error('user signed in'); //[ERROR] My-Logger - user signed in
             break;
         case 'signUp':
+            alert("Confirm you account with link sent to your email inbox! - " + getEmail(data.payload.data))
             logger.error('user signed up');
             window.location='/'
             break;
