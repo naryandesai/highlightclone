@@ -16,6 +16,7 @@ import {
   Col
 } from "reactstrap";
 import  CognitoAuth  from "../../cognito/index.js";
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
@@ -155,4 +156,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default withAuthenticator(LoginPage, true);

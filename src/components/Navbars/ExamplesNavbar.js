@@ -123,7 +123,7 @@ function ExamplesNavbar() {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink id="tologin"  href="/profile-page#/profile-page" >
+              <NavLink id="tologin"  href={loggedIn() ? "/profile-page#/profile-page" : "/login-page#/login-page"} >
                   {loggedIn() ? "Profile page" : "Log in"}
               </NavLink>
               <div id="login" >
