@@ -6,6 +6,24 @@ import {
   CognitoUserAttribute
 } from "amazon-cognito-identity-js";
 
+function getEmail(user) {
+  try {
+  let email = '';
+  let user_attributes = JSON.parse(user.storage['CognitoIdentityServiceProvider.3v6khmrs69c87vlmcipjcloi0c.'+user.username+'.userData'])['UserAttributes']
+  for(var attribute in user_attributes) {
+      console.log(user_attributes[attribute])
+      if(user_attributes[attribute].Name == 'email') {
+          email = user_attributes[attribute].Value
+      }
+  }
+  return email
+}
+
+  catch(ex) {
+    return 'dummy'
+  }
+}
+
 export default class CognitoAuth {
     constructor(config) {
     this.userSession = null;
@@ -15,9 +33,12 @@ export default class CognitoAuth {
         let cognitoUser = this.getCurrentUser()
         console.log(cognitoUser)
         if (cognitoUser != null) {
-            return cb(null, true)
+            fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/lock/check&'+getEmail(cognitoUser)+"&"+new Date().getTime())
+            .then((resp) => {
+            if(resp.status != 502)
+            window.location='login-page#/login-page'
+            })
         } else {
-            cb(null, false)
         }
     }
 

@@ -248,7 +248,7 @@ function getEmail() {
   try {
   let user = (CognitoAuth.getCurrentUser())
   let email = '';
-  let user_attributes = JSON.parse(user.storage['CognitoIdentityServiceProvider.4hj4872ba7c14i22oe9k5304mv.'+user.username+'.userData'])['UserAttributes']
+  let user_attributes = JSON.parse(user.storage['CognitoIdentityServiceProvider.3v6khmrs69c87vlmcipjcloi0c.'+user.username+'.userData'])['UserAttributes']
   for(var attribute in user_attributes) {
       console.log(user_attributes[attribute])
       if(user_attributes[attribute].Name == 'email') {
@@ -266,13 +266,15 @@ function getEmail() {
 function getAccessToken() {
   try {
     let user = (CognitoAuth.getCurrentUser())
-    return  user.storage['CognitoIdentityServiceProvider.4hj4872ba7c14i22oe9k5304mv.'+user.username+'.idToken']
+    return  user.storage['CognitoIdentityServiceProvider.3v6khmrs69c87vlmcipjcloi0c.'+user.username+'.idToken']
   } catch (ex) {
     window.location = '/profile-page#/profile-page'
   }
 }
 
 function Studentreader() {
+    CognitoAuth.isAuthenticated()
+
     let ebook = String(window.location).split('/').slice(-1)[0];
     let email = getEmail();
     fetch("https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/charge/"+email+"&"+ebook)
