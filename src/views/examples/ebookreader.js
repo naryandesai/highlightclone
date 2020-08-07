@@ -159,6 +159,21 @@ function render(myState) {
         page.render({
             canvasContext: ctx,
             viewport: viewport,
+        }).promise.then(() => {
+            return page.getTextContent();
+        }).then((textContent) => {
+            const pdf_canvas = document.getElementById("pdf_renderer")
+            const canvas_offset_top = pdf_canvas.offsetTop
+            const canvas_offset_left = pdf_canvas.offsetLeft
+            const canvas_height = pdf_canvas.height 
+            const canvas_width = pdf_canvas.width
+            document.getElementById("text-layer").setAttribute('style', `z-index: 99999!important; left: ${canvas_offset_left}px; top: ${canvas_offset_top}px; height: ${canvas_height}px; width: ${canvas_width}px`)
+            pdfjsLib.renderTextLayer({
+                textContent: textContent,
+                container: document.getElementById("text-layer"),
+                viewport: viewport,
+                textDivs: []
+            })
         });
         setupAnnotations(page, viewport, canvas, ctx, myState.zoom)
     });
