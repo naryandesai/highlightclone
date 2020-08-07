@@ -281,6 +281,7 @@ function Studentreader() {
       .then( res => res.text() )
       .then( data =>  {
         console.log('data', data)
+        console.log('asdasd', data)
         let found = false
         if(data != 0 && !(data==11900 && ebook.includes("Comp"))){
             found = true
