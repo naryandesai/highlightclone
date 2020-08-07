@@ -589,6 +589,7 @@ function Studentreader() {
 
         <div id="canvas_container" style={canvasStyle}>
           <canvas id="pdf_renderer"></canvas>
+          <div id="text-layer"></div>
           <div id="preview-step-controller">
             <label for="cars">Choose range:</label>
             <select name="preview-range" id="range-control">
