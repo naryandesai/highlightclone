@@ -5,6 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import "views/RiggsPDF.pdf";
 import * as pdfjsLib from 'pdfjs-dist';
 import './pdf.css';
+import './pdf_viewer.css';
 import  CognitoAuth  from "cognito/index.js";
 
 var myState = {
@@ -167,10 +168,10 @@ function render(myState) {
             const canvas_offset_left = pdf_canvas.offsetLeft
             const canvas_height = pdf_canvas.height 
             const canvas_width = pdf_canvas.width
-            document.getElementById("text-layer").setAttribute('style', `z-index: 99999!important; left: ${canvas_offset_left}px; top: ${canvas_offset_top}px; height: ${canvas_height}px; width: ${canvas_width}px`)
+            document.getElementsByClassName("textLayer")[0].setAttribute('style', `z-index: 99999!important; left: ${canvas_offset_left}px; top: ${canvas_offset_top}px; height: ${canvas_height}px; width: ${canvas_width}px`)
             pdfjsLib.renderTextLayer({
                 textContent: textContent,
-                container: document.getElementById("text-layer"),
+                container: document.getElementsByClassName("textLayer")[0],
                 viewport: viewport,
                 textDivs: []
             })
@@ -589,7 +590,7 @@ function Studentreader() {
 
         <div id="canvas_container" style={canvasStyle}>
           <canvas id="pdf_renderer"></canvas>
-          <div id="text-layer"></div>
+          <div className="textLayer"></div>
           <div id="preview-step-controller">
             <label for="cars">Choose range:</label>
             <select name="preview-range" id="range-control">
