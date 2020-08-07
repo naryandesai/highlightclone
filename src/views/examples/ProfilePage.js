@@ -25,6 +25,26 @@ function goToLogin(err, authenticated) {
   window.location = "/";
 }
 
+function getEmail(payload) {
+  try {
+  let email = '';
+  console.log('payload ', payload)
+  let user_attributes = JSON.parse(payload.storage['CognitoIdentityServiceProvider.3v6khmrs69c87vlmcipjcloi0c.'+payload.username+'.userData'])['UserAttributes']
+    for(var attribute in user_attributes) {
+        console.log(user_attributes[attribute])
+        if(user_attributes[attribute].Name == 'email') {
+            email = user_attributes[attribute].Value
+        }
+    }
+    return email
+  }
+
+  catch(ex) {
+    console.log(ex)
+    return 'dummy'
+  }
+}
+
 const logger = new Logger('My-Logger');
 
 const listener = (data) => {
@@ -32,11 +52,15 @@ const listener = (data) => {
     switch (data.payload.event) {
 
         case 'signIn':
+            alert("Confirm you account with code sent to your email inbox! - " + getEmail(data.payload.data))
+            console.log(data.payload.data)
+            let email = getEmail(data.payload.data)
+            fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/lock/lock&'+email)
             logger.error('user signed in'); //[ERROR] My-Logger - user signed in
             break;
         case 'signUp':
+            alert("Confirm you account with link sent to your email inbox! - " + getEmail(data.payload.data))
             logger.error('user signed up');
-            alert("Confirm you account with link sent to your email inbox!")
             window.location='/'
             break;
         case 'signOut':
@@ -56,6 +80,7 @@ Hub.listen('auth', listener);
 
 function ProfilePage() {
   const [pills, setPills] = React.useState("2");
+  CognitoAuth.isAuthenticated()
 
   if(window.location.href.indexOf('email') > -1) {
     let user = (CognitoAuth.getCurrentUser())

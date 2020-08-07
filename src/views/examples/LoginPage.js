@@ -16,6 +16,7 @@ import {
   Col
 } from "reactstrap";
 import  CognitoAuth  from "../../cognito/index.js";
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
@@ -26,6 +27,25 @@ function toRoot() {
   window.location.href ="/"
 }
 
+function getEmail() {
+  try {
+  let user = (CognitoAuth.getCurrentUser())
+  let email = '';
+  let user_attributes = JSON.parse(user.storage['CognitoIdentityServiceProvider.3v6khmrs69c87vlmcipjcloi0c.'+user.username+'.userData'])['UserAttributes']
+  for(var attribute in user_attributes) {
+      console.log(user_attributes[attribute])
+      if(user_attributes[attribute].Name == 'email') {
+          email = user_attributes[attribute].Value
+      }
+  }
+  return email
+}
+
+  catch(ex) {
+    return 'dummy'
+  }
+}
+
 
 function errorLog(e) {
   document.getElementById("errorMsg").innerHTML = JSON.stringify(e)
@@ -33,10 +53,16 @@ function errorLog(e) {
 }
 
 function signin() {
-  var login = document.getElementById("logintext").value
   var password = document.getElementById("password").value
-  console.log(login, password)
-  CognitoAuth.authenticate(login, password, e => toRoot(),  e => errorLog(e));
+  console.log(password)
+  fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/lock/unlock&'+getEmail()+"&"+password+"&"+new Date().getTime())
+  .then((res) => {
+    if (res.status == 404){
+      alert('Wrong unlock code!')
+    } else {
+      window.location = "profile-page#/profile-page"
+    }
+  })
 
 }
 
@@ -82,25 +108,6 @@ function LoginPage() {
                     <InputGroup
                       className={
                         "no-border input-lg" +
-                        (firstFocus ? " input-group-focus" : "")
-                      }
-                    >
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="now-ui-icons users_circle-08"></i>
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Username..."
-                        type="text"
-                        id="logintext"
-                        onFocus={() => setFirstFocus(true)}
-                        onBlur={() => setFirstFocus(false)}
-                      ></Input>
-                    </InputGroup>
-                    <InputGroup
-                      className={
-                        "no-border input-lg" +
                         (lastFocus ? " input-group-focus" : "")
                       }
                     >
@@ -110,7 +117,7 @@ function LoginPage() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        placeholder="Password..."
+                        placeholder="Email code..."
                         type="password"
                         id="password"
                         onFocus={() => setLastFocus(true)}
@@ -128,26 +135,13 @@ function LoginPage() {
                     >
                       Login
                     </Button>
-                    <div className="pull-left">
-                      <h6>
-                        <a
-                          className="link"
-                          href="#/sign-up-page"
-                        >
-                          Create Account
-                        </a>
-                      </h6>
-                    </div>
-                    <div id = "errorMsg">
-                    </div>
                     <div className="pull-right">
                       <h6>
                         <a
                           className="link"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
+                          onClick={e => fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/lock/lock&'+getEmail())}
                         >
-                          Forgot Password?
+                          Resend email
                         </a>
                       </h6>
                     </div>
@@ -162,4 +156,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default withAuthenticator(LoginPage, true);
