@@ -7,12 +7,50 @@ import * as pdfjsLib from 'pdfjs-dist';
 import './pdf.css';
 import './pdf_viewer.css';
 import  CognitoAuth  from "cognito/index.js";
+import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer';
+import { TextLayerBuilder } from "pdfjs-dist/lib/web/text_layer_builder";
+import pdffile from "./test.pdf";
 
 var myState = {
     pdf: null,
     currentPage: 1,
-    zoom: 2
+    zoom: 2,
+    searchText: "",
+    eventType: "",
+    searchBtn: false,
+    loaded: false
 }
+
+var container, eventBus, pdfLinkService, pdfFindController, pdfSinglePageViewer
+
+setTimeout(() => {
+  container = document.getElementById("canvas_container");
+  if (container) {
+    eventBus = new pdfjsViewer.EventBus();
+
+      pdfLinkService = new pdfjsViewer.PDFLinkService({
+        eventBus: eventBus,
+      });
+
+      pdfFindController = new pdfjsViewer.PDFFindController({
+        eventBus: eventBus,
+        linkService: pdfLinkService,
+      });
+
+      pdfSinglePageViewer = new pdfjsViewer.PDFSinglePageViewer({
+        container: container,
+        eventBus: eventBus,
+        linkService: pdfLinkService,
+        findController: pdfFindController,
+      });
+      pdfLinkService.setViewer(pdfSinglePageViewer);  
+
+      eventBus.on("pagesinit", function () {
+        pdfSinglePageViewer.currentScaleValue = "1.5";
+      });
+  }
+})
+
 
 var amount = 0
 
@@ -21,6 +59,9 @@ var boughtPhysicalAmount = false
 async function goToPage(num) {
     myState.currentPage = num
     document.getElementById("current_page").value = num
+    document.getElementById("searchtext").value = ""
+    myState.searchText = null
+    console.log(myState)
     render(myState)
     window.scrollTo(0, 0)
 }
@@ -28,59 +69,37 @@ async function goToPage(num) {
 let arrayResultPages = []
 let currentSearchPosition = 0
 
-async function searchText() {
+async function searchText(btn) {
 
   arrayResultPages = []
 
   var searchText = document.getElementById("searchtext").value
   searchText.replace(/\s+/g, '');
   searchText = searchText.toLowerCase()
-
-  var maxPages = myState.pdf._pdfInfo.numPages;
-  console.log("pages summary " + maxPages)
-
-  for (var i = 1; i <= maxPages; i++) {
-  // for (var i = 1; i <= 10; i++) {
-      var page = await myState.pdf.getPage(i);
-      var textContent = await page.getTextContent();
-      textContent = textContent.items.map(function (s) { return s.str; }).join('').toLowerCase(); // value page text
-      if (textContent.includes(searchText)) {
-        arrayResultPages.push(i)
-      }
+  myState.searchText = searchText
+  if (searchText) {
+    let options = {
+      query: searchText,
+      highlightAll: true
     }
-
-  if (arrayResultPages.length === 0) {
-    console.log("\""+searchText+"\"" + " is not found in the document")
+    if (btn == "prev") {
+      options["findPrevious"] = true
+    }
+    pdfFindController.executeCommand("find" + myState.eventType, options);
   }
-  else {
-    console.log(arrayResultPages)
-    let startPage = arrayResultPages[0]
-    myState.currentPage = startPage
-    document.getElementById("current_page").value = startPage
-    render(myState)
-  }
+  render(myState)
 }
 
 async function nextSearchResult() {
-  if (currentSearchPosition < arrayResultPages.length-1) {
-    currentSearchPosition = currentSearchPosition + 1;
-
-    let loadPage = arrayResultPages[currentSearchPosition]
-    myState.currentPage = loadPage
-    document.getElementById("current_page").value = loadPage
-    render(myState)
-  }
+    myState.searchBtn = true
+    myState.eventType = "again"
+    searchText("next")
 }
 
 async function prevSearchResult() {
-  if (currentSearchPosition > 0) {
-    currentSearchPosition = currentSearchPosition - 1;
-
-    let loadPage = arrayResultPages[currentSearchPosition]
-    myState.currentPage = loadPage
-    document.getElementById("current_page").value = loadPage
-    render(myState)
-  }
+    myState.searchBtn = true
+    myState.eventType = "again"
+    searchText("prev")
 }
 
 // old function, would be refactoring furtherly.
@@ -137,128 +156,27 @@ async function goToRef(ref) {
 
 
 function render(myState) {
-    document.getElementById("pdf_renderer").remove();
-    var container = document.getElementById("canvas_container");
-    var canvas = document.createElement('canvas');
-    var canvasStyle = {
-    display: '0 auto',
-          backgroundColor: '#FFFFFF',
-
-    }
-    canvas.id     = "pdf_renderer";
-    canvas.style.position = 'relative'
-    container.appendChild(canvas);
-    canvas.addEventListener("mousemove", (e) => {document.body.style.cursor  = 'auto'}, false);
-
-    var ctx = canvas.getContext('2d');
-
-    myState.pdf.getPage(myState.currentPage).then((page) => {
-        console.log(page._pageInfo.ref)
-        var viewport = page.getViewport({scale:myState.zoom});
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        page.render({
-            canvasContext: ctx,
-            viewport: viewport,
-        }).promise.then(() => {
-            return page.getTextContent();
-        }).then((textContent) => {
-            const pdf_canvas = document.getElementById("pdf_renderer")
-            const canvas_offset_top = pdf_canvas.offsetTop
-            const canvas_offset_left = pdf_canvas.offsetLeft
-            const canvas_height = pdf_canvas.height 
-            const canvas_width = pdf_canvas.width
-            document.getElementsByClassName("textLayer")[0].setAttribute('style', `z-index: 99999!important; left: ${canvas_offset_left}px; top: ${canvas_offset_top}px; height: ${canvas_height}px; width: ${canvas_width}px`)
-            pdfjsLib.renderTextLayer({
-                textContent: textContent,
-                container: document.getElementsByClassName("textLayer")[0],
-                viewport: viewport,
-                textDivs: []
-            })
-        });
-        setupAnnotations(page, viewport, canvas, ctx, myState.zoom)
-    });
-
-
-}
-
-  function setupAnnotations(page, viewport, canvas, ctx, zoom) {
-    var canvasOffset = canvas.getBoundingClientRect();
-    var promise = page.getAnnotations().then(function (annotationsData) {
-      viewport = viewport.clone({
-        dontFlip: true
-      });
-      for (var i = 0; i < annotationsData.length; i++) {
-        var annotation = annotationsData[i];
-        console.log('AREK', annotation)
-        if (!annotation || !('Link' == annotation.subtype)) {
-          continue;
+    if (!myState.loaded) {
+      myState.loaded = true
+      var loadingTask = pdfjsLib.getDocument(pdffile);
+      loadingTask.promise.then(function (pdfDocument) {
+        pdfSinglePageViewer.setDocument(pdfDocument);
+        pdfLinkService.setDocument(pdfDocument, null);
+      })
+    } else {
+      console.log(myState.searchBtn, myState.searchText, myState.eventType)
+      if (myState.searchText == "") {
+        pdfSinglePageViewer.currentPageNumber = myState.currentPage
+      } else {
+        if (myState.searchBtn) {
+          myState.searchBtn = false
         }
-
-        drawHyperLink(canvas, ctx, annotation, zoom, page.view)
-
-        var linkText = "Authorcode";
-        var linkURL = "http://www.authorcode.com";
-        var linkX = 50;
-        var linkY = 25;
-        var linkWidth;
-        var isLink = true;
-
-
-        function drawHyperLink(canvas, ctx, annotation, zoom, viewport) {
-            // check if supported
-            if (canvas.getContext) {
-                ctx.font = 'px sans-serif';
-                ctx.fillStyle = "#0000ff";
-                ctx.fillText(linkText, linkX, linkY);
-                linkWidth = ctx.measureText(linkText).width;
-                //ctx.beginPath();
-                //ctx.rect(annotation.rect[0], annotation.rect[1], annotation.rect[2] - annotation.rect[0], annotation.rect[3] - annotation.rect[1])
-                //ctx.stroke();
-                canvas.addEventListener("click", (e) => getCursorPosition(ctx.canvas, e, annotation.rect, annotation.url, zoom, viewport, annotation.dest), false);
-                canvas.addEventListener("mousemove", (e) => setCursor(ctx.canvas, e, annotation.rect, annotation.url, zoom, viewport), false);
-            }
-        }
-
-        function getCursorPosition(canvas, event, rectLink, url, zoom, viewport, dest) {
-            const rect = canvas.getBoundingClientRect()
-            const x = event.clientX - rect.left
-            const y = event.clientY - rect.top
-            var linkX, linkY, linkWidth, linkHeight;
-            linkX = rectLink[0] * zoom
-            linkHeight = (rectLink[3] - rectLink[1]) * zoom
-            linkY = ((viewport[3] - rectLink[1])) * zoom - linkHeight
-            linkWidth = (rectLink[2] - rectLink[0]) * zoom
-            if (x >= linkX && x <= (linkX + linkWidth)
-                    && y >= linkY && y <= (linkY + linkHeight)) {
-                if(dest) {
-                    console.log('AREK', dest[0])
-                    goToRef(dest[0])
-                }
-                else {
-                window.location = url; }
-            }
-        }
-
-        function setCursor(canvas, event, rectLink, url, zoom, viewport) {
-            const rect = canvas.getBoundingClientRect()
-            const x = event.clientX - rect.left
-            const y = event.clientY - rect.top
-            var linkX, linkY, linkWidth, linkHeight;
-            linkX = rectLink[0] * zoom
-            linkHeight = (rectLink[3] - rectLink[1]) * zoom
-            linkY = ((viewport[3] - rectLink[1])) * zoom - linkHeight
-            linkWidth = (rectLink[2] - rectLink[0]) * zoom
-            if (x >= linkX && x <= (linkX + linkWidth)
-                    && y >= linkY && y <= (linkY + linkHeight)) {
-                document.body.style.cursor = 'pointer'
-            }
-        }
+        document.getElementById("current_page").value = pdfSinglePageViewer.currentPageNumber
       }
-    });
-    return promise;
-  }
-
+    }
+       
+    
+}
 
 function getEmail() {
   try {
@@ -296,8 +214,6 @@ function Studentreader() {
     fetch("https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/charge/"+email+"&"+ebook)
       .then( res => res.text() )
       .then( data =>  {
-        console.log('data', data)
-        console.log('asdasd', data)
         let found = false
         if(data != 0){
             found = true
@@ -381,6 +297,8 @@ function Studentreader() {
                                   if(myState.pdf == null
                                      || myState.currentPage == 1) return;
                                   myState.currentPage -= 1;
+                                  myState.searchText = ""
+                                  document.getElementById("searchtext").value = ""
                                   document.getElementById("current_page")
                                           .value = myState.currentPage;
                                   render(myState);
@@ -392,7 +310,8 @@ function Studentreader() {
                                      || myState.currentPage > myState.pdf
                                                                      ._pdfInfo.numPages)
                                      return;
-
+                                  myState.searchText = ""
+                                  document.getElementById("searchtext").value = ""
                                   myState.currentPage += 1;
                                   document.getElementById("current_page")
                                           .value = myState.currentPage;
@@ -466,6 +385,11 @@ function Studentreader() {
                                  && desiredPage <= myState.pdf
                                                           ._pdfInfo.numPages) {
                                       myState.currentPage = desiredPage;
+                                    myState.searchText = ""
+                                    pdfFindController.executeCommand("find",{
+                                      query: null
+                                    })
+                                    document.getElementById("searchtext").value = ""
                                       document.getElementById("current_page")
                                               .value = desiredPage;
                                       render(myState);
@@ -532,10 +456,11 @@ function Studentreader() {
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
     }
-  return (
+    return (
     <div id="my_pdf_viewer" >
         <div id="navigation_controls" style={style}>
-
+        <div>
+          </div>
           <div className="navigation_button_block">
             <div className="navigation_button">
               <div className="backToDashboard" id="backToDashboard-bttn">
@@ -550,7 +475,7 @@ function Studentreader() {
 
           <div className="navigation_button_block">
             <div className="navigation_button">
-              <div className="label">Previous Page</div>
+              <div className="label">Prev Page</div>
               <div className="navIcon prevPage"></div>
             </div>
 
@@ -589,10 +514,10 @@ function Studentreader() {
         </div>
 
         <div id="canvas_container" style={canvasStyle}>
+        <div id="viewer" className="pdfViewer"></div>
           <canvas id="pdf_renderer"></canvas>
-          <div className="textLayer"></div>
           <div id="preview-step-controller">
-            <label for="cars">Choose range:</label>
+            <label htmlFor="cars">Choose range:</label>
             <select name="preview-range" id="range-control">
               <option value="1">1-100</option>
               <option value="100">101-200</option>
