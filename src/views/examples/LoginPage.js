@@ -57,6 +57,7 @@ function signin() {
   console.log(password)
   fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/lock/unlock&'+getEmail()+"&"+password+"&"+new Date().getTime())
   .then((res) => {
+
     if (res.status == 404){
       alert('Wrong unlock code!')
     } else {
@@ -64,7 +65,22 @@ function signin() {
     }
   })
 
+  fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/uni/' + getEmail() +"&"+document.getElementById("uni").value,
+    {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "POST"
+  })
+  .then((res) => {
+
+    console.log(res)
+  })
+
 }
+
+let ask_for_uni = false;
 
 function LoginPage() {
     console.log(CognitoAuth)
@@ -81,6 +97,25 @@ function LoginPage() {
       document.body.classList.remove("sidebar-collapse");
     };
   });
+  fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/uni/' + getEmail())
+  .then( res => res.json() )
+  .then(res => {
+    console.log('wtf')
+    if(res) {
+      document.getElementById("uni_form").style.display = "none";
+      ask_for_uni = false
+    } else {
+      if(document.getElementById("uni").value) {
+      document.getElementById("login_button").style.display = "block";
+
+      }
+      else {
+      document.getElementById("login_button").style.display = "none";
+      }
+      ask_for_uni = true
+    }
+    console.log(ask_for_uni && !document.getElementById("uni").value)
+  })
   return (
     <>
       <ExamplesNavbar />
@@ -104,6 +139,28 @@ function LoginPage() {
                       ></img>
                     </div>
                   </CardHeader>
+                  <CardBody id="uni_form">
+                    <InputGroup
+                      className={
+                        "no-border input-lg" +
+                        (lastFocus ? " input-group-focus" : "")
+                      }
+                    >
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="now-ui-icons business_bank">
+                          </i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        placeholder="Please tell us which university are you from"
+                        type="uni"
+                        id="uni"
+                        onFocus={() => setLastFocus(true)}
+                        onBlur={() => setLastFocus(false)}
+                      ></Input>
+                    </InputGroup>
+                  </CardBody>
                   <CardBody>
                     <InputGroup
                       className={
@@ -130,6 +187,7 @@ function LoginPage() {
                       block
                       className="btn-round"
                       color="info"
+                      id = "login_button"
                       onClick={e => signin()}
                       size="lg"
                     >
