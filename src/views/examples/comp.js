@@ -55,7 +55,7 @@ function startPurchase(amount, send_email, book) {
             sessionId,
           }).catch((error) =>
           console.log(error))}).catch((error) =>
-          {alert("Coupon code not recognized.");console.log(error);});
+          {alert("Coupon code not recognized or user not logged in.");console.log(error);});
       }).catch(console.log)
     } catch(err) {
       window.location='/profile-page#/profile-page'
@@ -134,6 +134,9 @@ function Comp() {
                   document.getElementById("coupon").style.display = "none";
                   document.getElementById("couponbutton").style.display = "none";
               }
+              if(data == 7900 || data == 11900) {
+                document.getElementById("bundle").style.display = "none";
+              }
 
                 })
       } catch (err) {
@@ -206,7 +209,7 @@ function Comp() {
           color="info"
           size="lg"
         >
-          Purchase online and physical edition for $119
+          Purchase Physical edition for $119
         </Button>
         <Input id="coupon" placeholder="coupon code">
         </Input>

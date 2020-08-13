@@ -282,7 +282,7 @@ function Studentreader() {
       .then( data =>  {
         console.log('data', data)
         let found = false
-        if(data != 0){
+        if(data != 0 && !(data==11900 && ebook.includes("Comp"))){
             found = true
         }
         amount = data
