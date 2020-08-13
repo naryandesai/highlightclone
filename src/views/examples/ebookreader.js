@@ -20,7 +20,7 @@ var myState = {
     searchBtn: false,
     loaded: false
 }
-
+//phraseSearch
 var container, eventBus, pdfLinkService, pdfFindController, pdfSinglePageViewer
 
 setTimeout(() => {
@@ -34,7 +34,7 @@ setTimeout(() => {
 
       pdfFindController = new pdfjsViewer.PDFFindController({
         eventBus: eventBus,
-        linkService: pdfLinkService,
+        linkService: pdfLinkService
       });
 
       pdfSinglePageViewer = new pdfjsViewer.PDFSinglePageViewer({
@@ -82,9 +82,10 @@ async function searchText(btn) {
       query: searchText,
       highlightAll: true
     }
-    if (btn == "prev") {
+    if (searchText.includes(" "))  
+      options["phraseSearch"] = true
+    if (btn == "prev")
       options["findPrevious"] = true
-    }
     pdfFindController.executeCommand("find" + myState.eventType, options);
   }
   render(myState)
