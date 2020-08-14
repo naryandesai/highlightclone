@@ -60,8 +60,7 @@ async function goToPage(num) {
     myState.currentPage = num
     document.getElementById("current_page").value = num
     document.getElementById("searchtext").value = ""
-    myState.searchText = null
-    console.log(myState)
+    myState.searchText = ""
     render(myState)
     window.scrollTo(0, 0)
 }
@@ -165,7 +164,7 @@ function render(myState) {
         pdfLinkService.setDocument(pdfDocument, null);
       })
     } else {
-      console.log(myState.searchBtn, myState.searchText, myState.eventType)
+      console.log(myState.searchBtn, myState.searchText, myState.eventType, myState.currentPage)
       if (myState.searchText == "") {
         pdfSinglePageViewer.currentPageNumber = myState.currentPage
       } else {
@@ -223,8 +222,6 @@ function Studentreader() {
         if(!found) {
           window.location = '/profile-page#/profile-page'
         } else {
-          console.log()
-          console.log(pdfjsLib.version)
           pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`
 
           function makeThumb(num, page) {
