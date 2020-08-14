@@ -119,23 +119,29 @@ function Comp() {
                   found = true
               }
               console.log('charge ', found)
-              document.getElementById("read").style.display = "none";
-              document.getElementById("purchase").style.display = "none";
-              document.getElementById("bundle").style.display = "none";
               if(data == 0) {
-                  document.getElementById("read").style.display = "none";
-                  document.getElementById("purchase").style.display = "block";
                   document.getElementById("bundle").style.display = "block";
+                  document.getElementById("purchase").style.display = "block";
+                  document.getElementById("coupon").style.display = "block";
+                  document.getElementById("couponbutton").style.display = "block";
               }
-              if(data != 0) {
-                  document.getElementById("read").style.display = "block";
+              if(data == 11900) {
+                  document.getElementById("bundle").style.display = "none";
+                  document.getElementById("purchase").style.display = "block";
+                  document.getElementById("coupon").style.display = "block";
+                  document.getElementById("couponbutton").style.display = "block";
+              }
+              if(data == 7900 || (data && data != 11900 && data != 19800)) {
+                  document.getElementById("purchase").style.display = "none";
+                  document.getElementById("bundle").style.display = "block";
+                  document.getElementById("coupon").style.display = "none";
+                  document.getElementById("couponbutton").style.display = "none";
+              }
+              if(data == 19800) {
                   document.getElementById("purchase").style.display = "none";
                   document.getElementById("bundle").style.display = "none";
                   document.getElementById("coupon").style.display = "none";
                   document.getElementById("couponbutton").style.display = "none";
-              }
-              if(data == 7900 || data == 11900) {
-                document.getElementById("bundle").style.display = "none";
               }
 
                 })
@@ -186,18 +192,6 @@ function Comp() {
           size="lg"
         >
           Purchase online edition for $79
-        </Button>
-        <Button
-          block
-          id='read'
-          style ={{display:'none'}}
-          className="btn-round"
-          align-items="center"
-          onClick={ () => startPurchase(4000, true, 'Computational Methods for Engineers with MATLAB Applications') }
-          color="info"
-          size="lg"
-        >
-          Buy extra physical edition for $40
         </Button>
         <Button
           block
