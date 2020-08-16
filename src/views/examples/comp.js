@@ -120,6 +120,7 @@ function Comp() {
               }
               console.log('charge ', found)
               if(data == 0) {
+
                   document.getElementById("bundle").style.display = "block";
                   document.getElementById("purchase").style.display = "block";
                   document.getElementById("coupon").style.display = "block";
@@ -131,7 +132,7 @@ function Comp() {
                   document.getElementById("coupon").style.display = "block";
                   document.getElementById("couponbutton").style.display = "block";
               }
-              if(data == 7900 || (data && data != 11900 && data != 19800)) {
+              if(data == 7900 || (data && data != 0 && data != 11900 && data != 19800)) {
                   document.getElementById("purchase").style.display = "none";
                   document.getElementById("bundle").style.display = "block";
                   document.getElementById("coupon").style.display = "none";
