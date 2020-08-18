@@ -155,6 +155,7 @@ function Bioprocess() {
             <Col className="ml-auto mr-auto text-center" md="8">
               <h2 className="title">Chemical and Bio-Process Control</h2>
               <h4 className="title">ISBN: 978-0-9669601-9-8</h4>
+              <h4 className="title">USE THE SAME EMAIL FOR LOGGING IN AND PURCHASING. OTHERWISE, YOU WILL NOT BE ABLE TO ACCESS THE E-BOOK</h4>
             </Col>
           </Row>
         </Container>
