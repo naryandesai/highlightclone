@@ -464,9 +464,6 @@ function Studentreader() {
               <div className="backToDashboard" id="backToDashboard-bttn">
                 Back to Dashboard
               </div>
-              <div className="backToDashboard" id="backToDashboard-bttn">
-                Table of Contents
-              </div>
             </div>
           </div>
 
