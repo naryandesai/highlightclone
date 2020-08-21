@@ -10,6 +10,7 @@ import  CognitoAuth  from "cognito/index.js";
 import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer';
 import { TextLayerBuilder } from "pdfjs-dist/lib/web/text_layer_builder";
 import pdffile from "./test.pdf";
+import pdffile2 from "./sample.pdf";
 
 var myState = {
     pdf: null,
@@ -158,12 +159,17 @@ async function goToRef(ref) {
 function render(myState) {
     if (!myState.loaded) {
       myState.loaded = true
-      var loadingTask = pdfjsLib.getDocument(pdffile);
-      loadingTask.promise.then(function (pdfDocument) {
-        pdfSinglePageViewer.setDocument(pdfDocument);
-        pdfLinkService.setDocument(pdfDocument, null);
-      })
-    } else {
+        let ebook = String(window.location).split('/').slice(-1)[0];
+        if(ebook.includes("Comp")) {
+          var loadingTask = pdfjsLib.getDocument(pdffile2);
+        } else {
+          var loadingTask = pdfjsLib.getDocument(pdffile);
+        }
+        loadingTask.promise.then(function (pdfDocument) {
+          pdfSinglePageViewer.setDocument(pdfDocument);
+          pdfLinkService.setDocument(pdfDocument, null);
+        })
+      } else {
       console.log(myState.searchBtn, myState.searchText, myState.eventType, myState.currentPage)
       if (myState.searchText == "") {
         pdfSinglePageViewer.currentPageNumber = myState.currentPage
