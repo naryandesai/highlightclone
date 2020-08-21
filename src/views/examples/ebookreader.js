@@ -159,17 +159,17 @@ async function goToRef(ref) {
 function render(myState) {
     if (!myState.loaded) {
       myState.loaded = true
-        let ebook = String(window.location).split('/').slice(-1)[0];
-        if(ebook.includes("Comp")) {
-          var loadingTask = pdfjsLib.getDocument(pdffile2);
-        } else {
-          var loadingTask = pdfjsLib.getDocument(pdffile);
-        }
-        loadingTask.promise.then(function (pdfDocument) {
-          pdfSinglePageViewer.setDocument(pdfDocument);
-          pdfLinkService.setDocument(pdfDocument, null);
-        })
+      let ebook = String(window.location).split('/').slice(-1)[0];
+      if(ebook.includes("Comp")) {
+        var loadingTask = pdfjsLib.getDocument(pdffile2);
       } else {
+        var loadingTask = pdfjsLib.getDocument(pdffile);
+      }
+      loadingTask.promise.then(function (pdfDocument) {
+        pdfSinglePageViewer.setDocument(pdfDocument);
+        pdfLinkService.setDocument(pdfDocument, null);
+      })
+    } else {
       console.log(myState.searchBtn, myState.searchText, myState.eventType, myState.currentPage)
       if (myState.searchText == "") {
         pdfSinglePageViewer.currentPageNumber = myState.currentPage
