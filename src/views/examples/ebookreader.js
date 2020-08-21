@@ -15,7 +15,7 @@ import pdffile2 from "./sample.pdf";
 var myState = {
     pdf: null,
     currentPage: 1,
-    zoom: 1.5,
+    zoom: 2,
     searchText: "",
     eventType: "",
     searchBtn: false,
@@ -44,11 +44,10 @@ setTimeout(() => {
         linkService: pdfLinkService,
         findController: pdfFindController,
       });
-      pdfLinkService.setViewer(pdfSinglePageViewer);
+      pdfLinkService.setViewer(pdfSinglePageViewer);  
 
       eventBus.on("pagesinit", function () {
-        pdfSinglePageViewer.currentScaleValue = myState.zoom;
-        goToPage(myState.currentPage)
+        pdfSinglePageViewer.currentScaleValue = "1.5";
       });
   }
 })
@@ -83,7 +82,7 @@ async function searchText(btn) {
       query: searchText,
       highlightAll: true
     }
-    if (searchText.includes(" "))
+    if (searchText.includes(" "))  
       options["phraseSearch"] = true
     if (btn == "prev")
       options["findPrevious"] = true
@@ -173,18 +172,16 @@ function render(myState) {
     } else {
       console.log(myState.searchBtn, myState.searchText, myState.eventType, myState.currentPage)
       if (myState.searchText == "") {
-        console.log(pdfSinglePageViewer)
         pdfSinglePageViewer.currentPageNumber = myState.currentPage
       } else {
         if (myState.searchBtn) {
           myState.searchBtn = false
         }
-        pdfSinglePageViewer.currentScaleValue = myState.zoom;
         document.getElementById("current_page").value = pdfSinglePageViewer.currentPageNumber
       }
     }
-
-
+       
+    
 }
 
 function getEmail() {
@@ -224,7 +221,7 @@ function Studentreader() {
       .then( res => res.text() )
       .then( data =>  {
         let found = false
-        if(data != 0 && !(data==11900 && ebook.includes("Comp"))){
+        if(data != 0){
             found = true
         }
         amount = data
@@ -288,15 +285,14 @@ function Studentreader() {
                           if(myState.pdf == null) return;
                           myState.zoom += 0.5;
                           console.log('ZOOM', myState.zoom)
-                          myState.loaded = false
                           render(myState);
                       });
                       document.getElementById('zoom_out')
                       .addEventListener('click', (e) => {
                           if(myState.pdf == null) return;
+                          if(myState.zoom > 2)
                           myState.zoom -= 0.5;
                           console.log('ZOOM', myState.zoom)
-                          myState.loaded = false
                           render(myState);
                       });
                       // document.getElementById('go_previous')
@@ -490,11 +486,6 @@ function Studentreader() {
             <div className="navigation_button">
               <div className="label">Next Page</div>
               <div className="navIcon nextPage"></div>
-            </div>
-
-            <div className="navigation_button">
-              <div className="label">Last Location</div>
-              <div className="navIcon lastPage"></div>
             </div>
           </div>
 
