@@ -10,11 +10,12 @@ import  CognitoAuth  from "cognito/index.js";
 import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer';
 import { TextLayerBuilder } from "pdfjs-dist/lib/web/text_layer_builder";
 import pdffile from "./test.pdf";
+import pdffile2 from "./sample.pdf";
 
 var myState = {
     pdf: null,
     currentPage: 1,
-    zoom: 2,
+    zoom: 1.5,
     searchText: "",
     eventType: "",
     searchBtn: false,
@@ -43,10 +44,11 @@ setTimeout(() => {
         linkService: pdfLinkService,
         findController: pdfFindController,
       });
-      pdfLinkService.setViewer(pdfSinglePageViewer);  
+      pdfLinkService.setViewer(pdfSinglePageViewer);
 
       eventBus.on("pagesinit", function () {
-        pdfSinglePageViewer.currentScaleValue = "1.5";
+        pdfSinglePageViewer.currentScaleValue = myState.zoom;
+        goToPage(myState.currentPage)
       });
   }
 })
@@ -81,7 +83,7 @@ async function searchText(btn) {
       query: searchText,
       highlightAll: true
     }
-    if (searchText.includes(" "))  
+    if (searchText.includes(" "))
       options["phraseSearch"] = true
     if (btn == "prev")
       options["findPrevious"] = true
@@ -158,7 +160,12 @@ async function goToRef(ref) {
 function render(myState) {
     if (!myState.loaded) {
       myState.loaded = true
-      var loadingTask = pdfjsLib.getDocument(pdffile);
+      let ebook = String(window.location).split('/').slice(-1)[0];
+      if(ebook.includes("Comp")) {
+        var loadingTask = pdfjsLib.getDocument(pdffile2);
+      } else {
+        var loadingTask = pdfjsLib.getDocument(pdffile);
+      }
       loadingTask.promise.then(function (pdfDocument) {
         pdfSinglePageViewer.setDocument(pdfDocument);
         pdfLinkService.setDocument(pdfDocument, null);
@@ -166,16 +173,18 @@ function render(myState) {
     } else {
       console.log(myState.searchBtn, myState.searchText, myState.eventType, myState.currentPage)
       if (myState.searchText == "") {
+        console.log(pdfSinglePageViewer)
         pdfSinglePageViewer.currentPageNumber = myState.currentPage
       } else {
         if (myState.searchBtn) {
           myState.searchBtn = false
         }
+        pdfSinglePageViewer.currentScaleValue = myState.zoom;
         document.getElementById("current_page").value = pdfSinglePageViewer.currentPageNumber
       }
     }
-       
-    
+
+
 }
 
 function getEmail() {
@@ -279,14 +288,15 @@ function Studentreader() {
                           if(myState.pdf == null) return;
                           myState.zoom += 0.5;
                           console.log('ZOOM', myState.zoom)
+                          myState.loaded = false
                           render(myState);
                       });
                       document.getElementById('zoom_out')
                       .addEventListener('click', (e) => {
                           if(myState.pdf == null) return;
-                          if(myState.zoom > 2)
                           myState.zoom -= 0.5;
                           console.log('ZOOM', myState.zoom)
+                          myState.loaded = false
                           render(myState);
                       });
                       // document.getElementById('go_previous')
