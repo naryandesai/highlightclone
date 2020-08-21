@@ -481,11 +481,6 @@ function Studentreader() {
               <div className="label">Next Page</div>
               <div className="navIcon nextPage"></div>
             </div>
-
-            <div className="navigation_button">
-              <div className="label">Last Location</div>
-              <div className="navIcon lastPage"></div>
-            </div>
           </div>
 
           <div className="navigation_button_block">
