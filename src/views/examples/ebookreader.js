@@ -24,6 +24,21 @@ var myState = {
 //phraseSearch
 var container, eventBus, pdfLinkService, pdfFindController, pdfSinglePageViewer
 
+function timeout() {
+    setTimeout(function () {
+        try {
+          myState.currentPage = pdfSinglePageViewer.currentPageNumber;
+          if(document.activeElement.id != 'current_page')
+          document.getElementById("current_page").value = pdfSinglePageViewer.currentPageNumber;
+        }
+        catch(err) {
+          document.getElementById("demo").innerHTML = err.message;
+        }
+        timeout();
+    }, 1000);
+}
+
+timeout()
 setTimeout(() => {
   container = document.getElementById("canvas_container");
   if (container) {
@@ -51,6 +66,7 @@ setTimeout(() => {
       });
   }
 })
+
 
 
 var amount = 0
@@ -124,28 +140,6 @@ async function goToText() {
       if (textContent.includes(searchText)) {
         // console.log(textContent)
         // console.log(searchText + " -----> " + j)
-        pageNum = j;
-        break;
-      }
-    }
-    myState.currentPage = pageNum
-    document.getElementById("current_page").value = pageNum
-    render(myState)
-}
-
-async function goToRef(ref) {
-    var maxPages = myState.pdf._pdfInfo.numPages;
-    var currentPage = ref.num/5
-    var pageNum = 1;
-    for (var j = parseInt(currentPage) + 1; j <= maxPages; j++) {
-      var page = await myState.pdf.getPage(j);
-
-      var txt = "";
-      var textContent = await page.getTextContent();
-      var pageRef = page._pageInfo.ref
-      console.log("AREK", pageRef, ref)
-      if (pageRef.num == ref.num) {
-        console.log("AREK Found ref on page " + j)
         pageNum = j;
         break;
       }
