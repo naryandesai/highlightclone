@@ -32,7 +32,6 @@ function timeout() {
           document.getElementById("current_page").value = pdfSinglePageViewer.currentPageNumber;
         }
         catch(err) {
-          document.getElementById("demo").innerHTML = err.message;
         }
         timeout();
     }, 1000);
@@ -228,6 +227,12 @@ function Studentreader() {
           pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`
 
           function makeThumb(num, page) {
+            let startPage = 0
+            if(ebook.includes("Comp")) {
+              startPage = 13;
+            } else {
+              startPage = 14;
+            }
             // draw page to fit into 96x96 canvas
             var vp = page.getViewport({scale:myState.zoom});
             var canvas = document.createElement("canvas");
@@ -237,7 +242,7 @@ function Studentreader() {
 
             return page.render({canvasContext: canvas.getContext("2d"), viewport: page.getViewport({scale:scale})}).promise.then(function () {
               canvas.getContext("2d").font = "20px Arial";
-              canvas.getContext("2d").fillText(String(num), 10, 20);
+              canvas.getContext("2d").fillText(String(num - startPage + 1), 10, 20);
               return canvas;
             });
           }
@@ -247,6 +252,7 @@ function Studentreader() {
           } catch(error) {
             window.location = '/profile-page#/profile-page'
           }
+
           fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/ebook/'+ebook)
               .then((resp) => resp.json())
               .then((resp) => {
@@ -259,6 +265,13 @@ function Studentreader() {
                       var div = document.getElementById("preview");
                       let result = await doc.getPage(num).then((e) => makeThumb(num, e))
                         .then(function (canvas) {
+                          let startPage = 0;
+                          if(ebook.includes("Comp")) {
+                            startPage = 13;
+                          } else {
+                            startPage = 14;
+                          }
+                          if(num - startPage + 1 > 0)
                           div.appendChild(canvas);
                       });
                     }
@@ -288,6 +301,7 @@ function Studentreader() {
                       document.getElementById('zoom_out')
                       .addEventListener('click', (e) => {
                           if(myState.pdf == null) return;
+                          if(myState.zoom > 0.5)
                           myState.zoom -= 0.5;
                           console.log('ZOOM', myState.zoom)
                           myState.loaded = false
@@ -458,19 +472,42 @@ function Studentreader() {
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
     }
+    let indexPage = 0
+    let tocPage = 0
+    ebook = String(window.location).split('/').slice(-1)[0];
+    if(ebook.includes("Comp")) {
+      tocPage = 9;
+      indexPage = 503;
+    } else {
+      tocPage = 8;
+      indexPage = 616;
+    }
     return (
     <div id="my_pdf_viewer" >
         <div id="navigation_controls" style={style}>
         <div>
           </div>
-          <div className="navigation_button_block">
+          <div className="navigation_button_block" >
             <div className="navigation_button">
               <div className="backToDashboard" id="backToDashboard-bttn">
                 Back to Dashboard
               </div>
             </div>
           </div>
-
+          <div className="navigation_button_block" onClick={() => goToPage(indexPage)}>
+            <div className="navigation_button">
+              <div className="backToDashboard" id="backToDashboard-bttn">
+                Index page
+              </div>
+            </div>
+          </div>
+          <div className="navigation_button_block" onClick={() => goToPage(tocPage)}>
+            <div className="navigation_button">
+              <div className="backToDashboard" id="backToDashboard-bttn">
+                Table of contents
+              </div>
+            </div>
+          </div>
           <div className="navigation_button_block">
             <input id="current_page" className="toolbarField pageNumber" placeholder={1} type="number"/>
           </div>
