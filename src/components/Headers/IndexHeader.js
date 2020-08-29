@@ -39,7 +39,7 @@ function IndexHeader() {
               className="n-logo"
               src={require("assets/img/now-logo.png")}
             ></img>
-            <h1 className="h1-seo">Now UI Kit.</h1>
+            <h1 className="h1-seo">Ferret Publishing</h1>
             <h3>A beautiful Bootstrap 4 UI kit. Yours free.</h3>
           </div>
           <h6 className="category category-absolute">

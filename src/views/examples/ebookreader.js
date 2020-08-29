@@ -231,7 +231,7 @@ function Studentreader() {
             if(ebook.includes("Comp")) {
               startPage = 13;
             } else {
-              startPage = 14;
+              startPage = 12;
             }
             // draw page to fit into 96x96 canvas
             var vp = page.getViewport({scale:myState.zoom});
@@ -269,7 +269,7 @@ function Studentreader() {
                           if(ebook.includes("Comp")) {
                             startPage = 13;
                           } else {
-                            startPage = 14;
+                            startPage = 12;
                           }
                           if(num - startPage + 1 > 0)
                           div.appendChild(canvas);
