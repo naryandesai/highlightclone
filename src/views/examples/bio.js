@@ -125,7 +125,7 @@ function Bioprocess() {
               document.getElementById("purchase").style.display = "none";
               document.getElementById("bundle").style.display = "none";
               if(data == 0) {
-                  document.getElementById("read").style.display = "block";
+                  document.getElementById("read").style.display = "none";
                   document.getElementById("purchase").style.display = "block";
                   document.getElementById("bundle").style.display = "block";
               }
