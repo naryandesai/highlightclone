@@ -53,6 +53,9 @@ function LandingPage() {
                 <h5 className="description">
                   Industrially relevant engineering textbooks that make learning easier using lots of worked out examples and simple to understand text.
                 </h5>
+                <a href="https://fptextbook.s3.amazonaws.com/Ordering+Instructions.PNG">
+                  Click here for ordering instructions.
+                </a>
               </Col>
             </Row>
           </Container>
