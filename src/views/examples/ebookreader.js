@@ -359,24 +359,24 @@ function Studentreader() {
                     previewbarPosition = 1;
                   break;
                   case "100":
-                    previewbarPosition = -7999;
+                    previewbarPosition = -80*100;
                   break;
                   case "200":
-                    previewbarPosition = -15998;
+                    previewbarPosition = -80*200;
                   break;
                   case "300":
-                    previewbarPosition = -23997;
+                    previewbarPosition = -80*300;
                     // previewbarPosition = -28797;
                   break;
                   case "400":
-                    previewbarPosition = -31996;
+                    previewbarPosition = -80*400;
                     // previewbarPosition = -38396;
                   break;
                   case "500":
-                    previewbarPosition = -39995;
+                    previewbarPosition = -80*500;
                   break;
                   case "600":
-                    previewbarPosition = -47994;
+                    previewbarPosition = -80*600;
                   break;
 
                   default:
