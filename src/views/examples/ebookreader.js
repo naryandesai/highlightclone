@@ -236,7 +236,7 @@ function Studentreader() {
             // draw page to fit into 96x96 canvas
             var vp = page.getViewport({scale:myState.zoom});
             var canvas = document.createElement("canvas");
-            canvas.width = canvas.height = 96;
+            canvas.width = canvas.height = 80;
             canvas.onclick = function() { goToPage(num); }
             var scale = Math.min(canvas.width / vp.width, canvas.height / vp.height);
 
