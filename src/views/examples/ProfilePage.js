@@ -67,6 +67,10 @@ const listener = (data) => {
             logger.error('user signed out');
             break;
         case 'signIn_failure':
+            console.log(data.payload.data.message)
+            if(data.payload.data.message.includes("SMS") ) {
+              alert("Unauthorized access detected! Either you are accessing the site from new device or completely different ip/region. Reset account to be able to access it again.")
+            }
             logger.error('user sign in failed');
             break;
         case 'configured':
