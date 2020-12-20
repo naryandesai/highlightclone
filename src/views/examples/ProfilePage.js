@@ -172,6 +172,13 @@ function ProfilePage() {
                           src={require("assets/img/process.jpg")}
                         ></img>
                         </a>
+                        <a href='pdf-file#/pdf-file/Computational Methods for Chemical Engineers'>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/cover.png")}
+                        ></img>
+                        </a>
                       </Col>
                       <Col md="6">
                         <img

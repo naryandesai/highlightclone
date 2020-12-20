@@ -74,7 +74,7 @@ function LandingPage() {
               alt="..."
               className="img-raised"
               href = "https://www.ferretpublish.com/an-introduction-to-engineering-fundamentals.html"
-              src={require("assets/img/freshman.jpg")}
+              src={require("assets/img/cover.png")}
             ></img></Link>
           </Col>
           <Col md="6">

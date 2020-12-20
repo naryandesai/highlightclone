@@ -11,6 +11,7 @@ import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer';
 import { TextLayerBuilder } from "pdfjs-dist/lib/web/text_layer_builder";
 import pdffile from "./test.pdf";
 import pdffile2 from "./sample.pdf";
+import pdffile3 from "./pdf3.pdf";
 
 var myState = {
     pdf: null,
@@ -154,7 +155,10 @@ function render(myState) {
     if (!myState.loaded) {
       myState.loaded = true
       let ebook = String(window.location).split('/').slice(-1)[0];
-      if(ebook.includes("Comp")) {
+      if(ebook.includes("Chemical")) {
+          var loadingTask = pdfjsLib.getDocument(pdffile3);
+      } 
+       else if(ebook.includes("Comp")) {
         var loadingTask = pdfjsLib.getDocument(pdffile2);
       } else {
         var loadingTask = pdfjsLib.getDocument(pdffile);
@@ -475,7 +479,10 @@ function Studentreader() {
     let indexPage = 0
     let tocPage = 0
     ebook = String(window.location).split('/').slice(-1)[0];
-    if(ebook.includes("Comp")) {
+    if (ebook.includes("Chemical")) {
+      tocPage = 12;
+      indexPage = 490;
+    } else if(ebook.includes("Comp")) {
       tocPage = 9;
       indexPage = 503;
     } else {
