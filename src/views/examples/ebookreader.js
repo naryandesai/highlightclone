@@ -155,7 +155,7 @@ function render(myState) {
     if (!myState.loaded) {
       myState.loaded = true
       let ebook = String(window.location).split('/').slice(-1)[0];
-      if(ebook.includes("Chemical")) {
+      if(ebook.includes("Chemical%20Engineers")) {
           var loadingTask = pdfjsLib.getDocument(pdffile3);
       } 
        else if(ebook.includes("Comp")) {
