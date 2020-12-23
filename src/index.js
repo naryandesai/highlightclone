@@ -35,6 +35,7 @@ import Matlab from "views/examples/matlab.js";
 import Comp from "views/examples/comp.js";
 import Bioprocess from "views/examples/bio.js";
 import Studentreader from "views/examples/ebookreader.js";
+import Chemeng from "views/examples/chemeng.js";
 import SignUp from "views/index-sections/SignUp.js";
 
 ReactDOM.render(
@@ -69,6 +70,10 @@ ReactDOM.render(
         <Route
           path="/bio"
           render={props => <Bioprocess {...props} />}
+        />
+        <Route
+          path="/chemeng"
+          render={props => <Chemeng {...props} />}
         />
         <Route
           path="/profile-page"

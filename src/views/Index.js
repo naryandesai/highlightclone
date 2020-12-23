@@ -73,6 +73,13 @@ function LandingPage() {
             <Link to = "/freshman"><img
               alt="..."
               className="img-raised"
+              href = "#"
+              src={require("assets/img/freshman.jpg")}
+            ></img></Link>
+            <span>&nbsp;&nbsp;</span>
+            <Link to = "/chemeng"><img
+              alt="..."
+              className="img-raised"
               href = "https://www.ferretpublish.com/an-introduction-to-engineering-fundamentals.html"
               src={require("assets/img/cover.png")}
             ></img></Link>
