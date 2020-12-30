@@ -256,7 +256,11 @@ function Studentreader() {
           } catch(error) {
             window.location = '/profile-page#/profile-page'
           }
-
+                      document.getElementById("backToDashboard-bttn")
+                      .addEventListener('click', (e) => {
+                        // window.location = '/profile-page#/profile-page'
+                        window.location = '/#/profile-page'
+                      });
           fetch('https://8wrro7by93.execute-api.us-east-1.amazonaws.com/ferret/ebook/'+ebook)
               .then((resp) => resp.json())
               .then((resp) => {
@@ -289,11 +293,7 @@ function Studentreader() {
                     console.log(pdf.getPageLabels().then(e=>console.log(e)))
                     var previewbarPosition = 1;
                     myState.pdf = pdf;
-                      document.getElementById("backToDashboard-bttn")
-                      .addEventListener('click', (e) => {
-                        // window.location = '/profile-page#/profile-page'
-                        window.location = '/#/profile-page'
-                      });
+
                       document.getElementById('zoom_in')
                       .addEventListener('click', (e) => {
                           if(myState.pdf == null) return;
@@ -479,7 +479,7 @@ function Studentreader() {
     let indexPage = 0
     let tocPage = 0
     ebook = String(window.location).split('/').slice(-1)[0];
-    if (ebook.includes("Chemical")) {
+    if (ebook.includes("Chemical%20Engineers")) {
       tocPage = 12;
       indexPage = 490;
     } else if(ebook.includes("Comp")) {
