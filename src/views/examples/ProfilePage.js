@@ -181,11 +181,13 @@ function ProfilePage() {
                         </a>
                       </Col>
                       <Col md="6">
+                        <a href='pdf-file#/pdf-file/Programming with MATLAB for Engineers'>
                         <img
                           alt="..."
                           className="img-raised"
                           src={require("assets/img/matlab.jpg")}
                         ></img>
+                        </a>
                         <a href='pdf-file#/pdf-file/Computational Methods for Engineers with MATLAB Applications'>
                         <img
                           alt="..."

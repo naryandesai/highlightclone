@@ -12,6 +12,7 @@ import { TextLayerBuilder } from "pdfjs-dist/lib/web/text_layer_builder";
 import pdffile from "./test.pdf";
 import pdffile2 from "./sample.pdf";
 import pdffile3 from "./pdf3.pdf";
+import pdffile4 from "./pdf4.pdf";
 
 var myState = {
     pdf: null,
@@ -158,8 +159,10 @@ function render(myState) {
       if(ebook.includes("Chemical%20Engineers")) {
           var loadingTask = pdfjsLib.getDocument(pdffile3);
       } 
-       else if(ebook.includes("Comp")) {
+      else if(ebook.includes("Comp")) {
         var loadingTask = pdfjsLib.getDocument(pdffile2);
+      } else if(ebook.includes("Programming%20with%20MATLAB%20for%20Engineers")) {
+        var loadingTask = pdfjsLib.getDocument(pdffile4);
       } else {
         var loadingTask = pdfjsLib.getDocument(pdffile);
       }
@@ -477,11 +480,14 @@ function Studentreader() {
         whiteSpace: 'nowrap',
     }
     let indexPage = 0
-    let tocPage = 0
+    let tocPage = 0 
     ebook = String(window.location).split('/').slice(-1)[0];
     if (ebook.includes("Chemical%20Engineers")) {
       tocPage = 12;
       indexPage = 490;
+    } else if(ebook.includes("Programming%20with%20MATLAB%20for%20Engineers")) {
+      tocPage = 12;
+      indexPage = 412;
     } else if(ebook.includes("Comp")) {
       tocPage = 9;
       indexPage = 503;
