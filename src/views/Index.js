@@ -96,6 +96,11 @@ function LandingPage() {
               className="img-raised"
               src={require("assets/img/comp.jpg")}
             ></img></Link>
+                        <Link to = "/python"><img
+              alt="..."
+              className="img-raised"
+              src={require("assets/img/python.png")}
+            ></img></Link>
             </Col>
           </Row>
         </Col>

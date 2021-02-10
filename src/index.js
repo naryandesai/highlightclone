@@ -37,6 +37,7 @@ import Bioprocess from "views/examples/bio.js";
 import Studentreader from "views/examples/ebookreader.js";
 import Chemeng from "views/examples/chemeng.js";
 import SignUp from "views/index-sections/SignUp.js";
+import Python from "views/examples/python.js";
 
 ReactDOM.render(
   <HashRouter>
@@ -74,6 +75,10 @@ ReactDOM.render(
         <Route
           path="/chemeng"
           render={props => <Chemeng {...props} />}
+        />
+        <Route
+          path="/python"
+          render={props => <Python {...props} />}
         />
         <Route
           path="/profile-page"

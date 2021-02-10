@@ -195,6 +195,13 @@ function ProfilePage() {
                           src={require("assets/img/comp.jpg")}
                         ></img>
                         </a>
+                        <a href='pdf-file#/pdf-file/An Introduction to Python for Engineers'>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/python.png")}
+                        ></img>
+                        </a>
                       </Col>
                     </Row>
                   </Col>

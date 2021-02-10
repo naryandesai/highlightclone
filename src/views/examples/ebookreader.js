@@ -13,6 +13,7 @@ import pdffile from "./test.pdf";
 import pdffile2 from "./sample.pdf";
 import pdffile3 from "./pdf3.pdf";
 import pdffile4 from "./pdf4.pdf";
+import pdffile5 from "./python.pdf";
 
 var myState = {
     pdf: null,
@@ -161,7 +162,10 @@ function render(myState) {
       } 
       else if(ebook.includes("Comp")) {
         var loadingTask = pdfjsLib.getDocument(pdffile2);
-      } else if(ebook.includes("Programming%20with%20MATLAB%20for%20Engineers")) {
+      } else if(ebook.includes("Python")) {
+        var loadingTask = pdfjsLib.getDocument(pdffile5);
+      }
+       else if(ebook.includes("Programming%20with%20MATLAB%20for%20Engineers")) {
         var loadingTask = pdfjsLib.getDocument(pdffile4);
       } else {
         var loadingTask = pdfjsLib.getDocument(pdffile);
@@ -488,6 +492,9 @@ function Studentreader() {
     } else if(ebook.includes("Programming%20with%20MATLAB%20for%20Engineers")) {
       tocPage = 12;
       indexPage = 412;
+    }else if(ebook.includes("Python")) {
+      tocPage = 12;
+      indexPage = 266;
     } else if(ebook.includes("Comp")) {
       tocPage = 9;
       indexPage = 503;
